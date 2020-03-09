@@ -2,8 +2,7 @@ import sbt._
 
 object Dependencies {
 
-  // https://mvnrepository.com/artifact/com.typesafe.akka/akka-actor
-  lazy val akkaActor = "com.typesafe.akka" %% "akka-actor" % "2.6.3"
-
+  lazy val akkaActorTyped = "com.typesafe.akka" %% "akka-actor-typed" % "2.6.3"
+  lazy val logback = "ch.qos.logback" % "logback-classic" % "1.2.3"
 
 }
