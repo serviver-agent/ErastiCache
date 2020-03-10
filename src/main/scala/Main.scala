@@ -7,9 +7,9 @@ import scala.concurrent.duration._
 
 object Main extends App {
 
-  implicit val timeout: Timeout = 3.seconds
+  implicit val timeout: Timeout                            = 3.seconds
   implicit val system: ActorSystem[CounterManager.Command] = ActorSystem(CounterManager(), "system")
-  implicit val ec = system.executionContext
+  implicit val ec                                          = system.executionContext
 
   system ! CounterManager.CreateCounter("a")
   system ! CounterManager.CreateCounter("b")
@@ -19,7 +19,9 @@ object Main extends App {
   system ! CounterManager.ShowCounter("a")
 
   val count: Future[Int] = for {
-    CounterManager.GetCounterRefReply(Some(counter)) <- system.ask(CounterManager.GetCounterRef("a", _: ActorRef[CounterManager.GetCounterRefReply]))
+    CounterManager.GetCounterRefReply(Some(counter)) <- system.ask(
+      CounterManager.GetCounterRef("a", _: ActorRef[CounterManager.GetCounterRefReply])
+    )
     Counter.ReadReply(count) <- counter ? Counter.Read
   } yield count
 
@@ -28,4 +30,3 @@ object Main extends App {
   system.terminate()
 
 }
-
