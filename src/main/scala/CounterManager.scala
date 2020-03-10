@@ -10,9 +10,7 @@ import scala.util.Success
 object CounterManager {
 
   def apply(counters: HashMap[String, ActorRef[Counter.Command]] = HashMap.empty): Behavior[Command] =
-
     Behaviors.setup { context =>
-
       implicit val t: Timeout = 3.seconds
 
       Behaviors.receiveMessage {

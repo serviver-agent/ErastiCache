@@ -1,14 +1,21 @@
+import Dependencies._
 
-name := "erastiCounter"
+ThisBuild / scalaVersion     := "2.13.1"
+ThisBuild / version          := "0.1.0-SNAPSHOT"
+ThisBuild / organization     := "com.example"
+ThisBuild / organizationName := "example"
 
-version := "0.1"
-
-scalaVersion := "2.13.1"
-
-libraryDependencies ++= Seq(
-  Dependencies.akkaActorTyped,
-//  Dependencies.akkaStreamTyped,
-  Dependencies.logback
-
+lazy val commonSettings = Seq(
+  scalacOptions ++= "-deprecation" :: "-feature" :: "-Xlint" :: Nil,
+  scalacOptions in (Compile, console) ~= {_.filterNot(_ == "-Xlint")},
+  scalafmtOnCompile := true
 )
 
+lazy val root = (project in file("."))
+  .settings(
+    name := "erastiCounter",
+    commonSettings,
+    libraryDependencies += scalaTest % Test,
+    libraryDependencies += akkaActorTyped,
+    libraryDependencies += logback
+  )
