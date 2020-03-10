@@ -27,5 +27,3 @@ object Counter {
   final case object Reset extends Command
 
 }
-
-
