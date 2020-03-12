@@ -1,9 +1,9 @@
-package com.serviveragent.etasticounter
+package com.serviveragent.erasticounter
 
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, Behavior}
 import akka.util.Timeout
-import com.serviveragent.etasticounter.Counter._
+import com.serviveragent.erasticounter.Counter._
 
 import scala.collection.immutable.HashMap
 import scala.concurrent.duration._
