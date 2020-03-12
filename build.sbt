@@ -15,7 +15,10 @@ lazy val root = (project in file("."))
   .settings(
     name := "erastiCounter",
     commonSettings,
-    libraryDependencies += scalaTest % Test,
-    libraryDependencies += akkaActorTyped,
-    libraryDependencies += logback
+    libraryDependencies ++= Seq(scalaTest % Test,
+      akkaActorTyped,
+      akkaStream,
+      akkaHttpSprayJson,
+      logback
+    )
   )
