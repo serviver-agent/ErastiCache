@@ -1,4 +1,4 @@
-package com.serviveragent.etasticounter
+package com.serviveragent.erasticounter
 
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, Behavior}
