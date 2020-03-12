@@ -1,5 +1,7 @@
-import akka.actor.typed.{ActorRef, Behavior}
+package com.serviveragent.etasticounter
+
 import akka.actor.typed.scaladsl.Behaviors
+import akka.actor.typed.{ActorRef, Behavior}
 
 object Counter {
 
