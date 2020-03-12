@@ -1,9 +1,11 @@
+package com.serviveragent.etasticounter
+
+import akka.actor.typed.scaladsl.AskPattern._
 import akka.actor.typed.{ActorRef, ActorSystem}
 import akka.util.Timeout
-import akka.actor.typed.scaladsl.AskPattern._
 
-import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
 
 object Main extends App {
 
