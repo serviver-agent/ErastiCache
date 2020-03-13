@@ -29,7 +29,12 @@ object SiteCounter {
 
   final case class CountUpAt(url: Url) extends Command
 
-  case class ReadAt(url: Url, replyTo: ActorRef[Red]) extends Command
+  final case class ReadAt(url: Url, replyTo: ActorRef[Red]) extends Command
+
+  //  helper for ask pattern
+  object ReadAt_ {
+    def apply(url: Url)(replyTo: ActorRef[Red]): ReadAt = ReadAt(url, replyTo)
+  }
 
   final case class Red(count: Option[Int])
 
