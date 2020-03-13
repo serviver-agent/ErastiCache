@@ -21,7 +21,7 @@ object Main extends App {
   system ! SiteCounter.CountUpAt("/foo")
   system ! SiteCounter.CountUpAt("/bar/baz")
 
-  val fooCount: SiteCounter.Red = Await.result(system.ask(SiteCounter.ReadAt("/foo", _)), Duration.Inf)
+  val fooCount: SiteCounter.ReadAtReply = Await.result(system.ask(SiteCounter.ReadAt("/foo", _)), Duration.Inf)
   println(s"/foo (${fooCount.count.getOrElse(-1)})")
 
   system.terminate()

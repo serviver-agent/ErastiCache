@@ -19,7 +19,7 @@ object SiteCounter {
     }
 
     case ReadAt(url, replyTo) => {
-      replyTo ! Red(state.get(url))
+      replyTo ! ReadAtReply(state.get(url))
       Behaviors.same
     }
 
@@ -29,13 +29,13 @@ object SiteCounter {
 
   final case class CountUpAt(url: Url) extends Command
 
-  final case class ReadAt(url: Url, replyTo: ActorRef[Red]) extends Command
+  final case class ReadAt(url: Url, replyTo: ActorRef[ReadAtReply]) extends Command
 
   //  helper for ask pattern
   object ReadAt_ {
-    def apply(url: Url)(replyTo: ActorRef[Red]): ReadAt = ReadAt(url, replyTo)
+    def apply(url: Url)(replyTo: ActorRef[ReadAtReply]): ReadAt = ReadAt(url, replyTo)
   }
 
-  final case class Red(count: Option[Int])
+  final case class ReadAtReply(count: Option[Int])
 
 }
