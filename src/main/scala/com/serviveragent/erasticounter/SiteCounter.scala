@@ -2,6 +2,8 @@ package com.serviveragent.erasticounter
 
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRef, Behavior}
+import com.serviveragent.erasticounter.SiteCounter.Command
+
 import scala.collection.mutable.HashMap
 
 object SiteCounter {
@@ -31,9 +33,8 @@ object SiteCounter {
 
   final case class ReadAt(url: Url, replyTo: ActorRef[ReadAtReply]) extends Command
 
-  //  helper for ask pattern
-  object ReadAt_ {
-    def apply(url: Url)(replyTo: ActorRef[ReadAtReply]): ReadAt = ReadAt(url, replyTo)
+  object ReadAt {
+    def create(url: Url)(replyTo: ActorRef[ReadAtReply]) = ReadAt(url: Url, replyTo: ActorRef[ReadAtReply])
   }
 
   final case class ReadAtReply(count: Option[Int])
