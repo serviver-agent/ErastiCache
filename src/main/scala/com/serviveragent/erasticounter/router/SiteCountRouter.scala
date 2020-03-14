@@ -1,6 +1,5 @@
 package com.serviveragent.erasticounter.router
 
-
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server.Directives._
@@ -28,14 +27,14 @@ trait SiteCountRouter {
     implicit val responseFormat = jsonFormat1(CounterResponse)
     onComplete(getSiteCount(request)) {
       case Success(count) => complete(count)
-      case Failure(e) =>
+      case Failure(e)     =>
         // TODO: emit log that indicates the error is occurred.
         complete(InternalServerError)
     }
   }
 
   private def getSiteCount(request: CounterRequest): Future[Option[CounterResponse]] = {
-    Future.successful(Some(CounterResponse(200)))
+    Future.successful(Some(CounterResponse(4500)))
   }
 
 }

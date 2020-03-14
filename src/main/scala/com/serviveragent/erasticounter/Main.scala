@@ -12,23 +12,23 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.io.StdIn
 
-
 object Main extends App {
 
   val host = "localhost"
   val port = 8080
 
-  implicit val system = ActorSystem("erasticounter")
-  implicit val ec = system.dispatcher
+  implicit val system  = ActorSystem("erasticounter")
+  implicit val ec      = system.dispatcher
   val timeout: Timeout = 3.seconds
 
   val route: Route = new RestRoute(system, timeout).allRoutes
 
-  implicit val materializer = ActorMaterializer()
+  implicit val materializer                = ActorMaterializer()
   val bindingFuture: Future[ServerBinding] = Http().bindAndHandle(route, host, port)
 
   StdIn.readLine()
-  bindingFuture.flatMap(_.unbind())
+  bindingFuture
+    .flatMap(_.unbind())
     .onComplete(_ => system.terminate())
 
   //  implicit val timeout: Timeout                            = 3.seconds

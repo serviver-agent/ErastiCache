@@ -2,10 +2,10 @@ package com.serviveragent.erasticounter.router
 
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class HealthCheckRouterSpec extends WordSpec with Matchers with ScalatestRouteTest
-  with HealthCheckRouter {
+class HealthCheckRouterSpec extends AnyWordSpec with Matchers with ScalatestRouteTest with HealthCheckRouter {
 
   "The HealthCheck router" should {
     "return status code 200 and a string OK" in {

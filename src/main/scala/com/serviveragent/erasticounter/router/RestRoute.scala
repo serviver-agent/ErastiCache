@@ -7,10 +7,9 @@ import akka.util.Timeout
 
 import scala.concurrent.ExecutionContext
 
-class RestRoute(system: ActorSystem, timeout: Timeout) extends HealthCheckRouter
-  with SiteCountRouter {
+class RestRoute(system: ActorSystem, timeout: Timeout) extends HealthCheckRouter with SiteCountRouter {
 
-  private implicit val requestTimeout = timeout
+  private implicit val requestTimeout                     = timeout
   private implicit val executionContext: ExecutionContext = system.dispatcher
 
   def allRoutes: Route = {
