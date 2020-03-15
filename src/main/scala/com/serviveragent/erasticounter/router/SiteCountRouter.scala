@@ -11,7 +11,7 @@ import scala.util.{Failure, Success}
 
 trait SiteCountRouter {
 
-  implicit val requestFormat = jsonFormat1(CounterRequest)
+  private implicit val requestFormat = jsonFormat1(CounterRequest)
 
   def countRoute: Route = {
     path("counter") {
