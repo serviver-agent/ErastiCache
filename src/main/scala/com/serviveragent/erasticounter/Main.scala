@@ -7,15 +7,16 @@ import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
 import com.serviveragent.erasticounter.router.RestRoute
+import com.serviveragent.erasticounter.util.config.AppConfig
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.io.StdIn
 
-object Main extends App {
+object Main extends App with AppConfig {
 
-  val host = "localhost"
-  val port = 8080
+  val host = appConfig.getString("server.host")
+  val port = appConfig.getInt("server.port")
 
   implicit val system  = ActorSystem("erasticounter")
   implicit val ec      = system.dispatcher
