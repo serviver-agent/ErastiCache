@@ -25,7 +25,7 @@ class SiteCounterRouterSpec
       val expectedJson =
         """
           |{
-          |  "counts": 4500
+          |  "counts": 2
           |}
           |""".stripMargin
 

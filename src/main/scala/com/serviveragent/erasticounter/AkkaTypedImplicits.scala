@@ -14,8 +14,4 @@ trait AkkaTypedImplicits {
   implicit val ec: ExecutionContext = system.executionContext
 }
 
-trait AkkaUntypedImplicits {}
-
 object AkkaTypedImplicits extends AkkaTypedImplicits
-
-object AkkaUntypedImplicits extends AkkaUntypedImplicits

@@ -6,6 +6,7 @@ import akka.util.Timeout
 
 import scala.concurrent.{ExecutionContextExecutor, Future}
 
+// TODO: remove this class according to pxfnc's implementation.
 class SiteCounter(implicit system: ActorSystem[CounterManager.Command], timeout: Timeout) {
 
   private implicit val executionContext: ExecutionContextExecutor = system.executionContext
