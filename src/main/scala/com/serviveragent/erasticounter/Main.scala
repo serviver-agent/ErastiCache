@@ -1,56 +1,51 @@
 package com.serviveragent.erasticounter
 
-import akka.actor.ActorSystem
+import akka.actor.typed.ActorSystem
+import akka.actor.typed.scaladsl.adapter._
+import akka.actor.typed.scaladsl.{ActorContext, Behaviors}
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.Http.ServerBinding
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
+import akka.{Done, actor}
 import com.serviveragent.erasticounter.router.RestRoute
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
-import scala.io.StdIn
+import scala.util.{Failure, Success}
 
 object Main extends App {
 
-  val host = "localhost"
-  val port = 8080
+  private val host = "localhost"
+  private val port = 8080
 
-  implicit val system  = ActorSystem("erasticounter")
-  implicit val ec      = system.dispatcher
-  val timeout: Timeout = 3.seconds
+  private val timeout: Timeout = 3.seconds
 
-  val route: Route = new RestRoute(system, timeout).allRoutes
+  val behaviors = Behaviors.setup[Done] { ctx =>
+    runRoute(ctx)
+    Behaviors.receiveMessage {
+      case Done =>
+        Behaviors.stopped
+    }
+  }
 
-  implicit val materializer                = ActorMaterializer()
-  val bindingFuture: Future[ServerBinding] = Http().bindAndHandle(route, host, port)
+  val system = ActorSystem(behaviors, "erasticounter-actor")
 
-  StdIn.readLine()
-  bindingFuture
-    .flatMap(_.unbind())
-    .onComplete(_ => system.terminate())
+  private def runRoute(context: ActorContext[Done]): Unit = {
+    implicit val untypedSystem: actor.ActorSystem = context.system.toClassic
+    implicit val ec                               = untypedSystem.dispatcher
+    implicit val materializer                     = ActorMaterializer()(untypedSystem) // TODO: don't use deprecated method.
+    val route: Route                              = new RestRoute(untypedSystem, timeout).allRoutes
+    val bindingFuture: Future[ServerBinding]      = Http().bindAndHandle(route, host, port)
 
-  //  implicit val timeout: Timeout                            = 3.seconds
-  //  implicit val system: ActorSystem[CounterManager.Command] = ActorSystem(CounterManager(), "system")
-  //  implicit val ec                                          = system.executionContext
-  //
-  //  system ! CounterManager.CreateCounter("a")
-  //  system ! CounterManager.CreateCounter("b")
-  //  system ! CounterManager.IncrCounter("a")
-  //  system ! CounterManager.IncrCounter("b")
-  //  system ! CounterManager.IncrCounter("a")
-  //  system ! CounterManager.ShowCounter("a")
-  //
-  //  val count: Future[Int] = for {
-  //    CounterManager.GetCounterRefReply(Some(counter)) <- system.ask(
-  //      CounterManager.GetCounterRef("a", _: ActorRef[CounterManager.GetCounterRefReply])
-  //    )
-  //    Counter.ReadReply(count) <- counter ? Counter.Read
-  //  } yield count
-  //
-  //  system.log.info(s"count: ${Await.result(count.map(Right(_)).recover(Left(_)), Duration.Inf)}")
-  //
-  //  system.terminate()
+    bindingFuture.onComplete {
+      case Success(bound) =>
+        println("server start.")
+      case Failure(e) =>
+        e.printStackTrace()
+    }
+
+  }
 
 }

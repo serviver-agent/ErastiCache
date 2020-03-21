@@ -19,13 +19,13 @@ object CounterManager {
 
         case ShowCounter(key) => {
           counters.get(key).foreach { counter =>
-            context.ask(counter)(Read) {
+            context.ask(counter, Read) {
               case Success(ReadReply(count)) => {
                 context.log.info(s"key: $key  count: $count")
                 NoOp
               }
               case _ => {
-                context.log.warning(s"response not received")
+                context.log.warn(s"response not received")
                 NoOp
               }
             }
