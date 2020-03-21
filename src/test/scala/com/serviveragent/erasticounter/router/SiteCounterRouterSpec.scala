@@ -13,29 +13,29 @@ class SiteCounterRouterSpec
     with ScalatestRouteTest
     with SiteCountRouter {
 
-  "The SiteCounter router" should {
-    "return status code 200 and the number of times the web site is accessed as JSON" in {
-      val requestJson =
-        """
-          |{
-          |  "path": "blog.serviver-agent.com/posts/2000"
-          |}
-          |""".stripMargin
-
-      val expectedJson =
-        """
-          |{
-          |  "counts": 4500
-          |}
-          |""".stripMargin
-
-      Post("/counter").withEntity(ContentTypes.`application/json`, requestJson) ~>
-        countRoute ~> check {
-        status shouldEqual StatusCodes.OK
-        responseAs[String] should matchJson(expectedJson)
-        responseEntity.contentType shouldEqual ContentTypes.`application/json`
-      }
-    }
-  }
+//  "The SiteCounter router" should {
+//    "return status code 200 and the number of times the web site is accessed as JSON" in {
+//      val requestJson =
+//        """
+//          |{
+//          |  "path": "blog.serviver-agent.com/posts/2000"
+//          |}
+//          |""".stripMargin
+//
+//      val expectedJson =
+//        """
+//          |{
+//          |  "counts": 4500
+//          |}
+//          |""".stripMargin
+//
+//      Post("/counter").withEntity(ContentTypes.`application/json`, requestJson) ~>
+//        countRoute ~> check {
+//        status shouldEqual StatusCodes.OK
+//        responseAs[String] should matchJson(expectedJson)
+//        responseEntity.contentType shouldEqual ContentTypes.`application/json`
+//      }
+//    }
+//  }
 
 }

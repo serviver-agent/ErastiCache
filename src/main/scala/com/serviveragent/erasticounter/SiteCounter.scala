@@ -1,31 +1,30 @@
 package com.serviveragent.erasticounter
 
-import akka.actor.typed.ActorSystem
+import akka.actor.typed.scaladsl.AskPattern._
+import akka.actor.typed.{ActorRef, ActorSystem}
 import akka.util.Timeout
 
-import scala.concurrent.ExecutionContextExecutor
+import scala.concurrent.{ExecutionContextExecutor, Future}
 
-class SiteCounter(system: ActorSystem[CounterManager.Command], timeout: Timeout) {
+class SiteCounter(implicit system: ActorSystem[CounterManager.Command], timeout: Timeout) {
 
-  implicit val requestTimeout                             = timeout
-  implicit def executionContext: ExecutionContextExecutor = system.executionContext
+  private implicit val executionContext: ExecutionContextExecutor = system.executionContext
 
-  def countSite(): Unit = {
+  def countSite(): Future[Option[Int]] = {
 
-    system ! CounterManager.CreateCounter("a")
-    system ! CounterManager.CreateCounter("b")
-    system ! CounterManager.IncrCounter("a")
-    system ! CounterManager.IncrCounter("b")
-    system ! CounterManager.IncrCounter("a")
-    system ! CounterManager.ShowCounter("a")
+    val value: Future[Int] = for {
+      CounterManager.GetCounterRefReply(Some(counter)) <- system.ask(
+        CounterManager.GetCounterRef("a", _: ActorRef[CounterManager.GetCounterRefReply])
+      )
+      Counter.ReadReply(count) <- counter ? Counter.Read
+    } yield count
 
-    //    val count1: Future[Int] = for {
-    //      CounterManager.GetCounterRefReply(Some(counter)) <- system.ask(
-    //        CounterManager.GetCounterRef("a", _: ActorRef[CounterManager.GetCounterRefReply])
-    //      )
-    //      Counter.ReadReply(count) <- counter ? Counter.Read
-    //    } yield count
-    //  }
+    //system.log.info(s"count: ${Await.result(value.map(Right(_)).recover(Left(_)), Duration.Inf)}")
+    value.map(value => Some(value))
   }
 
+}
+
+object SiteCounter {
+  def apply()(implicit system: ActorSystem[CounterManager.Command], timeout: Timeout): SiteCounter = new SiteCounter()
 }

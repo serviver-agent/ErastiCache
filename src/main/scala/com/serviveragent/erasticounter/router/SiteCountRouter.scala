@@ -1,19 +1,22 @@
 package com.serviveragent.erasticounter.router
 
+import akka.actor.typed.ActorSystem
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
+import akka.util.Timeout
+import com.serviveragent.erasticounter.{CounterManager, SiteCounter}
 import spray.json.DefaultJsonProtocol._
+import spray.json.RootJsonFormat
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 trait SiteCountRouter {
 
-  private implicit val requestFormat = jsonFormat1(CounterRequest)
-
-  def countRoute: Route = {
+  def countRoute(implicit actorSystem: ActorSystem[CounterManager.Command], timeout: Timeout): Route = {
+    implicit val requestFormat: RootJsonFormat[CounterRequest] = jsonFormat1(CounterRequest)
     path("counter") {
       post {
         entity(as[CounterRequest]) { params =>
@@ -23,7 +26,9 @@ trait SiteCountRouter {
     }
   }
 
-  private def responseWithCount(request: CounterRequest): Route = {
+  private def responseWithCount(
+      request: CounterRequest
+  )(implicit actorSystem: ActorSystem[CounterManager.Command], timeout: Timeout): Route = {
     implicit val responseFormat = jsonFormat1(CounterResponse)
     onComplete(getSiteCount(request)) {
       case Success(count) => complete(count)
@@ -33,8 +38,13 @@ trait SiteCountRouter {
     }
   }
 
-  private def getSiteCount(request: CounterRequest): Future[Option[CounterResponse]] = {
-    Future.successful(Some(CounterResponse(4500)))
+  private def getSiteCount(
+      request: CounterRequest
+  )(implicit actorSystem: ActorSystem[CounterManager.Command], timeout: Timeout): Future[Option[CounterResponse]] = {
+    implicit val ec: ExecutionContext = actorSystem.executionContext
+    for {
+      value <- SiteCounter().countSite()
+    } yield value.map(v => CounterResponse(v))
   }
 
 }
